@@ -26,10 +26,47 @@ public class VirtualPet {
         System.out.println("               PET ISLAND");
         
         System.out.println("\n1. Start\n2. Instructions\n3. Exit");
-        System.out.print("Please make a selection(1,2 or 3): ");
-        int selection = input.nextInt();
+        System.out.print("Please make a selection(1,2,3): ");
+        int menuSelection = input.nextInt();
         
 
+        switch (menuSelection) {
+            case 1: 
+                System.out.println("\nSelect your pet: \n1. Dog\n2. Cat\n3. Bear");
+                System.out.print("Your selection(1,2,3): ");
+                int petSelection = input.nextInt();
+                input.nextLine();
+                String pet = "";
+                
+                switch (petSelection) {
+                    case 1: 
+                        pet = "Dog";
+                        break;
+                    case 2: 
+                        pet = "Cat";
+                        break;
+                    case 3: 
+                        pet = "Bear";
+                        break;
+                    default: 
+                        System.out.println("Bad Input");
+                        System.exit(0);
+                }
+                
+                System.out.println("You chose: " + pet);
+                
+                break;
+                
+            case 2:
+                
+            case 3: 
+                System.exit(0); 
+                break;
+                
+            default: 
+                System.out.println("Bad Input");
+                
+        }
     }
     
 }
