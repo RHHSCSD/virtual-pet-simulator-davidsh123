@@ -16,10 +16,13 @@ public class VirtualPet {
     public static void main(String[] args) {
         // TODO code application logic here
         Scanner input = new Scanner(System.in);
+        Random r = new Random();
         
         //final vairables
         final String CORRECT_USERNAME = "snoopy";
         final String CORRECT_PASSWORD = "toto";
+        final String CONSONANTS = "bcdfghjklmnpqrstvwxyz";
+        final String VOWELS = "aeoiu";
         
         
         //Starting screen
@@ -56,9 +59,9 @@ public class VirtualPet {
                 System.out.println("\nSelect your pet: \n1. Dog\n2. Cat\n3. Bear");
                 System.out.print("Your selection(1,2,3): ");
                 int petSelection = input.nextInt();
-                input.nextLine();
                 String pet = "";
                 
+                //pet selection
                 switch (petSelection) {
                     case 1: 
                         pet = "Dog";
@@ -74,13 +77,69 @@ public class VirtualPet {
                         System.exit(0);
                 }
                 
-                System.out.println("You chose: " + pet);
+                System.out.println("You chose: " + pet + "!");
+                
+                
+                //naming
+                System.out.println("\nNow we need to name your pet " + pet + "!");
+                System.out.println("Would you like to:\n1) Choose the name yourself\n2) Generate a random name");
+                System.out.print("Your selection (1,2): ");
+                int namingChoice = input.nextInt();
+                String petName = "";
+                
+                switch(namingChoice){
+                    //user chooses the name
+                    case 1:
+                        System.out.print("Enter your pet's name: ");
+                        input.nextLine();
+                        petName = input.nextLine();
+                        break;
+                        
+                    //generate a random name
+                    case 2:
+                        
+                        int lenName = r.nextInt(5) + 4;
+                        
+                        for(int i = 0; i < lenName; i++) {
+                            if(i % 2 == 0) {
+                                //consonant
+                                petName += CONSONANTS.charAt(r.nextInt(21));
+                            }
+                            else if(i % 2 == 1) {
+                                //vowel
+                                if(Math.random() < 0.5 && lenName - (i + 1) >= 2) {
+                                    //50% chance of having a double letter 
+                                    //Also make sure that there there is still space for 2 letters in name
+                                    char vow = VOWELS.charAt(r.nextInt(5));
+                                    petName += vow;
+                                    petName += vow;
+                                    lenName--;
+                                }
+                                else {
+                                    petName += VOWELS.charAt(r.nextInt(5));
+                                }
+                            }
+                            
+                            if(i == 0) petName = petName.toUpperCase(); // capitalize the first letter
+                        }
+                        break;
+                        
+                    default:
+                        System.out.println("Bad Input");
+                        System.exit(0);
+                }
+                
+                
+                System.out.println("Your pet, named " + petName + ", has been born!");
                 
                 break;
                 
+                
+            
             //instructions
             case 2:
                 System.out.println("Instructions");
+                break;
             //exit
             case 3: 
                 System.exit(0); 
