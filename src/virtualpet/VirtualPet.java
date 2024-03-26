@@ -18,7 +18,7 @@ public class VirtualPet {
         Scanner input = new Scanner(System.in);
         Random r = new Random();
         
-        //final vairables
+        //final variables
         final String CORRECT_USERNAME = "snoopy";
         final String CORRECT_PASSWORD = "toto";
         final String CONSONANTS = "bcdfghjklmnpqrstvwxyz";
@@ -35,27 +35,31 @@ public class VirtualPet {
         System.out.println("               PET ISLAND");
         
         
-        //log in
+        //logging in
         System.out.print("Enter your name: ");
         String userName = input.nextLine();
+        
         System.out.print("Enter the password: ");
         String password = input.nextLine();
+        
         if(!userName.equals(CORRECT_USERNAME) || !password.equals(CORRECT_PASSWORD)) {
             System.out.println("Incorrect credentials. ");
             System.exit(0);
         }
         
         
-        //menu
+        //display menu options
         System.out.println("\n1. Start\n2. Instructions\n3. Exit");
         System.out.print("Please make a selection(1,2,3): ");
         int menuSelection = input.nextInt();
         
         
-        //menu selection
+        //switch for different menu selections
         switch (menuSelection) {
-            //start page
+            
             case 1: 
+                //start
+                
                 System.out.println("\nSelect your pet: \n1. Dog\n2. Cat\n3. Bear");
                 System.out.print("Your selection(1,2,3): ");
                 int petSelection = input.nextInt();
@@ -76,7 +80,7 @@ public class VirtualPet {
                         System.out.println("Bad Input");
                         System.exit(0);
                 }
-                
+                //display pet species
                 System.out.println("You chose: " + pet + "!");
                 
                 
@@ -88,16 +92,16 @@ public class VirtualPet {
                 String petName = "";
                 
                 switch(namingChoice){
-                    //user chooses the name
+                    
                     case 1:
+                        //user chooses the name
                         System.out.print("Enter your pet's name: ");
                         input.nextLine();
                         petName = input.nextLine();
                         break;
-                        
-                    //generate a random name
+                               
                     case 2:
-                        
+                        //generate a random name
                         int lenName = r.nextInt(5) + 4;
                         
                         for(int i = 0; i < lenName; i++) {
@@ -128,28 +132,42 @@ public class VirtualPet {
                         System.out.println("Bad Input");
                         System.exit(0);
                 }
-                
-                
+                //display name
                 System.out.println("Your pet, named " + petName + ", has been born!");
                 
+                
+                //dividing starting points
+                int startingPoints = 20; // number of total starting points to be randomly divided among health, food, energy
+                
+                int maxHealth = r.nextInt(startingPoints) + 1;
+                startingPoints -= maxHealth;
+                int maxFood = r.nextInt(startingPoints) + 1;
+                startingPoints -= maxFood;
+                int maxEnergy = startingPoints;
+                
+                //display stats
+                System.out.println("\nMAX HEALTH = " + maxHealth + "\nMAX FOOD = " + maxFood + "\nMAX ENERGY = " + maxEnergy);
+                
                 break;
+                
                 
                 
             
-            //instructions
             case 2:
+                //instructions
+                
                 System.out.println("Instructions");
                 break;
-            //exit
+            
             case 3: 
+                //exit
+                
                 System.exit(0); 
                 break;
             
-                
             default: 
                 System.out.println("Bad Input");
                 
         }
     }
-    
 }
