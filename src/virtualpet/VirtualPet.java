@@ -76,36 +76,40 @@ public class VirtualPet {
             case 1: 
                 //start
                 
+                //variables
+                String petName = "", petSpecies = "";
+                int maxHealth, maxFood, maxEnergy, money = 0;
+                
+                
                 //pet selection
                 System.out.println("\nSelect your pet: \n1. Dog\n2. Cat\n3. Bear");
                 System.out.print("Your selection(1,2,3): ");
                 int petSelection = input.nextInt();
-                String pet = "";
                 
                 switch (petSelection) {
                     case 1: 
-                        pet = "Dog";
+                        petSpecies = "Dog";
                         break;
                     case 2: 
-                        pet = "Cat";
+                        petSpecies = "Cat";
                         break;
                     case 3: 
-                        pet = "Bear";
+                        petSpecies = "Bear";
                         break;
                     default: 
                         System.out.println("Bad Input");
                         System.exit(0);
                 }
                 //display pet species
-                System.out.println("You chose: " + pet + "!");
+                System.out.println("You chose: " + petSpecies + "!");
                 
                 
                 //naming
-                System.out.println("\nNow we need to name your pet " + pet + ".");
+                System.out.println("\nNow we need to name your pet " + petSpecies + ".");
                 System.out.println("Would you like to:\n1) Choose the name yourself\n2) Generate a random name");
                 System.out.print("Your selection (1,2): ");
                 int namingChoice = input.nextInt();
-                String petName = "";
+                
                 
                 switch(namingChoice){
                     
@@ -148,21 +152,60 @@ public class VirtualPet {
                         System.exit(0);
                 }
                 //display name
-                System.out.println("\nYour pet, named " + petName + ", has been born!");
+                System.out.println("\nYour " + petSpecies + ", " + petName + ", has been born!");
                 
                 
                 //dividing starting points
                 int startingPoints = STARTING_POINTS; // number of total starting points to be randomly divided among health, food, energy
                 
-                int maxHealth = random.nextInt(startingPoints) + 1;
+                maxHealth = random.nextInt(startingPoints) + 1;
                 startingPoints -= maxHealth;
-                int maxFood = random.nextInt(startingPoints) + 1;
+                maxFood = random.nextInt(startingPoints) + 1;
                 startingPoints -= maxFood;
-                int maxEnergy = startingPoints;
+                maxEnergy = startingPoints;
                 
                 //display stats
                 System.out.println("\nMAX HEALTH = " + maxHealth + "\nMAX FOOD = " + maxFood + "\nMAX ENERGY = " + maxEnergy);
                 
+                
+                //mini games
+                System.out.print("Do you want to play number guessing game (1) or matching game (2): ");
+                int gameChoice = input.nextInt();
+                
+                switch(gameChoice) {
+                    case 1: 
+                        System.out.println("\nWelcome to the number guessing game!\n");
+                        System.out.println("Random number from 1-100 has been chosen!");
+                        int randNum = random.nextInt(100) + 1;
+                        final int TOTAL_NUM_GUESSES = 10;
+                        int guessCounter = 0;
+                        int guess = 0;
+                        while(guess != randNum  && guessCounter < TOTAL_NUM_GUESSES) {
+                            System.out.print("Your guess: ");
+                            guess = input.nextInt();
+                            if (guess < randNum) {
+                                System.out.println("Too low");
+                                guessCounter++;
+                            }
+                            else if(guess > randNum) {
+                                System.out.println("Too high");
+                                guessCounter++;
+                            }
+                            else {
+                                System.out.println("Correct!");
+                                int moneyGained = random.nextInt(5) + 1;
+                                System.out.println("You won " + moneyGained + " moneys!");
+                                money += moneyGained;
+                                guessCounter = 5;
+                            }
+                        }
+                        break;
+                        
+                    case 2:
+                        
+                        
+                        
+                }
                 
                 
                 break;
