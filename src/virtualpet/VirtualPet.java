@@ -16,13 +16,15 @@ public class VirtualPet {
     public static void main(String[] args) {
         // TODO code application logic here
         Scanner input = new Scanner(System.in);
-        Random r = new Random();
+        Random random = new Random();
         
         //final variables
         final String CORRECT_USERNAME = "snoopy";
         final String CORRECT_PASSWORD = "toto";
         final String CONSONANTS = "bcdfghjklmnpqrstvwxyz";
         final String VOWELS = "aeoiu";
+        final int STARTING_POINTS = 20;//20 starting points
+        final double CHANCE_DOUBLE_LETTER = 0.3;//chance of having a double letter in pet name
         
         
         //Starting screen
@@ -42,9 +44,23 @@ public class VirtualPet {
         System.out.print("Enter the password: ");
         String password = input.nextLine();
         
-        if(!userName.equals(CORRECT_USERNAME) || !password.equals(CORRECT_PASSWORD)) {
-            System.out.println("Incorrect credentials. ");
-            System.exit(0);
+        int counter = 1;
+        while((!userName.equals(CORRECT_USERNAME) || !password.equals(CORRECT_PASSWORD)) && counter <= 3) {
+            if(counter == 3) {
+                System.out.println("Login failed.");
+                System.exit(0);
+            }
+            
+            System.out.println("\nIncorrect credentials. ");
+            System.out.println("Attempts left: " + (3 - counter) + "\n");
+            
+            
+            System.out.print("Enter your name: ");
+            userName = input.nextLine();
+        
+            System.out.print("Enter the password: ");
+            password = input.nextLine();
+            counter++;
         }
         
         
@@ -60,12 +76,12 @@ public class VirtualPet {
             case 1: 
                 //start
                 
+                //pet selection
                 System.out.println("\nSelect your pet: \n1. Dog\n2. Cat\n3. Bear");
                 System.out.print("Your selection(1,2,3): ");
                 int petSelection = input.nextInt();
                 String pet = "";
                 
-                //pet selection
                 switch (petSelection) {
                     case 1: 
                         pet = "Dog";
@@ -85,7 +101,7 @@ public class VirtualPet {
                 
                 
                 //naming
-                System.out.println("\nNow we need to name your pet " + pet + "!");
+                System.out.println("\nNow we need to name your pet " + pet + ".");
                 System.out.println("Would you like to:\n1) Choose the name yourself\n2) Generate a random name");
                 System.out.print("Your selection (1,2): ");
                 int namingChoice = input.nextInt();
@@ -102,25 +118,24 @@ public class VirtualPet {
                                
                     case 2:
                         //generate a random name
-                        int lenName = r.nextInt(5) + 4;
+                        int lenName = random.nextInt(5) + 4;
                         
                         for(int i = 0; i < lenName; i++) {
                             if(i % 2 == 0) {
                                 //consonant
-                                petName += CONSONANTS.charAt(r.nextInt(21));
+                                petName += CONSONANTS.charAt(random.nextInt(21));
                             }
                             else if(i % 2 == 1) {
                                 //vowel
-                                if(Math.random() < 0.5 && lenName - (i + 1) >= 2) {
-                                    //50% chance of having a double letter 
-                                    //Also make sure that there there is still space for 2 letters in name
-                                    char vow = VOWELS.charAt(r.nextInt(5));
+                                if(Math.random() < CHANCE_DOUBLE_LETTER && lenName - (i + 1) >= 2) {
+                                    //make sure that there there is still space for 2 letters in name
+                                    char vow = VOWELS.charAt(random.nextInt(5));
                                     petName += vow;
                                     petName += vow;
                                     lenName--;
                                 }
                                 else {
-                                    petName += VOWELS.charAt(r.nextInt(5));
+                                    petName += VOWELS.charAt(random.nextInt(5));
                                 }
                             }
                             
@@ -133,25 +148,26 @@ public class VirtualPet {
                         System.exit(0);
                 }
                 //display name
-                System.out.println("Your pet, named " + petName + ", has been born!");
+                System.out.println("\nYour pet, named " + petName + ", has been born!");
                 
                 
                 //dividing starting points
-                int startingPoints = 20; // number of total starting points to be randomly divided among health, food, energy
+                int startingPoints = STARTING_POINTS; // number of total starting points to be randomly divided among health, food, energy
                 
-                int maxHealth = r.nextInt(startingPoints) + 1;
+                int maxHealth = random.nextInt(startingPoints) + 1;
                 startingPoints -= maxHealth;
-                int maxFood = r.nextInt(startingPoints) + 1;
+                int maxFood = random.nextInt(startingPoints) + 1;
                 startingPoints -= maxFood;
                 int maxEnergy = startingPoints;
                 
                 //display stats
                 System.out.println("\nMAX HEALTH = " + maxHealth + "\nMAX FOOD = " + maxFood + "\nMAX ENERGY = " + maxEnergy);
                 
+                
+                
                 break;
                 
-                
-                
+
             
             case 2:
                 //instructions
