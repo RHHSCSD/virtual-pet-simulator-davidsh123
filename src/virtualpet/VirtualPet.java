@@ -174,15 +174,25 @@ public class VirtualPet {
                 
                 switch(gameChoice) {
                     case 1: 
+                        //number guessing game
+                        
                         System.out.println("\nWelcome to the number guessing game!\n");
                         System.out.println("Random number from 1-100 has been chosen!");
+                        
+                        //choose randum number 1-100
                         int randNum = random.nextInt(100) + 1;
+                        
+                        //10 total attempts
                         final int TOTAL_NUM_GUESSES = 10;
                         int guessCounter = 0;
                         int guess = 0;
+                        
+                        
                         while(guess != randNum  && guessCounter < TOTAL_NUM_GUESSES) {
                             System.out.print("Your guess: ");
                             guess = input.nextInt();
+                            
+                            //compare guess to random number
                             if (guess < randNum) {
                                 System.out.println("Too low");
                                 guessCounter++;
@@ -196,7 +206,6 @@ public class VirtualPet {
                                 int moneyGained = random.nextInt(5) + 1;
                                 System.out.println("You won " + moneyGained + " moneys!");
                                 money += moneyGained;
-                                guessCounter = 5;
                             }
                         }
                         break;
