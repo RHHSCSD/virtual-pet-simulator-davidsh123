@@ -196,13 +196,16 @@ public class VirtualPet {
                             if (guess < randNum) {
                                 System.out.println("Too low");
                                 guessCounter++;
+                                System.out.println("Guesses left: " + (TOTAL_NUM_GUESSES - guessCounter));
                             }
                             else if(guess > randNum) {
                                 System.out.println("Too high");
                                 guessCounter++;
+                                System.out.println("Guesses left: " + (TOTAL_NUM_GUESSES - guessCounter));
                             }
                             else {
                                 System.out.println("Correct!");
+                                //Win money
                                 int moneyGained = random.nextInt(5) + 1;
                                 System.out.println("You won " + moneyGained + " moneys!");
                                 money += moneyGained;
@@ -211,10 +214,80 @@ public class VirtualPet {
                         break;
                         
                     case 2:
+                        //matching game
                         
+                        //shuffling
+                        String unshuffled = "aabbccddee";
+                        String shuffled = "";
                         
+                        for(int i = 0; i < 10; i++) {
+                            int randomIndex = random.nextInt(unshuffled.length());
+                            String randomChar = unshuffled.substring(randomIndex, randomIndex + 1);
+                            shuffled += randomChar;
+                            unshuffled = unshuffled.substring(0, randomIndex) + unshuffled.substring(randomIndex + 1);
+                        }
+                        //System.out.println(shuffled);  UNCOMMENT IF YOU WANT TO REVEAL ANSWER BEFORE PLAYING (FOR TESTING)
+                        
+                        //Censored string that will be updated after every correct match
+                        String shuffledCensored = "**********";
+                        
+                        //take guess input
+                        System.out.println("Shuffled string: " + shuffledCensored);
+                        System.out.print("\nGuess Index 1: ");
+                        int index1 = input.nextInt();
+                        System.out.print("Guess Index 2: ");
+                        int index2 = input.nextInt();
+                        
+                        //while there are still censored characters (more guesses to be made)
+                        while (shuffledCensored.indexOf("*") >= 0) {
+                            
+                            //characters at the guessed index are a match and haven't been chosen already 
+                            //are represented by '*' in shuffledCensored
+                            if(shuffled.charAt(index1) == shuffled.charAt(index2) && shuffledCensored.charAt(index1) == '*') {
+                                System.out.println("They are a match!");
+                                
+                                //Win money
+                                int moneyGained = random.nextInt(5) + 1;
+                                System.out.println("You won " + moneyGained + " moneys!");
+                                money += moneyGained;
+                                
+                                //update shuffledCensored
+                                //replace asterix with the proper letters
+                                shuffledCensored = shuffledCensored.substring(0, Math.min(index1, index2)) + shuffled.charAt(index1) + shuffledCensored.substring(Math.min(index1, index2) + 1, Math.max(index1, index2)) + shuffled.charAt(index1) + shuffledCensored.substring(Math.max(index1, index2) + 1);
+                                
+                            }
+                            
+                            //One of the indexes have already been guessed correctly
+                            else if(shuffledCensored.charAt(index1) != '*' || shuffledCensored.charAt(index2) != '*') {
+                                System.out.println("You already guessed one of those indexes");
+                            }
+                            //not a match
+                            else {
+                                System.out.println("They are not a match!");
+                            }
+                            
+                            //Display shuffledCensored
+                            System.out.println("\nShuffled string: " + shuffledCensored);
+                            
+                            //take new input if there is still characters to be guessed
+                            if(shuffledCensored.indexOf("*") >= 0) {
+                                    System.out.print("\nGuess Index 1: ");
+                                    index1 = input.nextInt();
+                                    System.out.print("Guess Index 2: ");
+                                    index2 = input.nextInt();
+                            }
+                            
+                            //No more characters being censored = win
+                            else {
+                                System.out.println("Congratulations! You solved it!");
+                            }
+                        }
+                        
+                    break;
                         
                 }
+                
+                
                 
                 
                 break;
