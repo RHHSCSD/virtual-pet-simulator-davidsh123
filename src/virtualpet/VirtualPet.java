@@ -9,10 +9,80 @@ import java.util.*;
  * @author michael.roy-diclemen
  */
 public class VirtualPet {
-
-    /**
-     * @param args the command line arguments
-     */
+    
+    //shuffle a string
+    public static String shuffleString(String s, Random r) {
+        
+        String shuffled = "";
+        
+        //length of string to be shuffled
+        int len = s.length();
+        
+        //randomly select characters from s to be put into shuffled
+        for(int i = 0; i < len; i++) {
+            int randomIndex = r.nextInt(s.length());
+            String randomChar = s.substring(randomIndex, randomIndex + 1);
+            shuffled += randomChar;
+            
+            //remove that char from s
+            s = s.substring(0, randomIndex) + s.substring(randomIndex + 1);
+        }
+        return shuffled;
+    }
+    
+    //matching game
+    //reveal two indexes in shuffledCensored
+    public static String revealTwoIndexes(String censored, String s, int index1, int index2) {
+        int min = Math.min(index1, index2);
+        int max = Math.max(index1, index2);
+        
+        return censored.substring(0, min) + s.charAt(min) + censored.substring(min + 1, max) + s.charAt(max) + censored.substring(max + 1);
+    }
+    
+    //Generate a random name following the rules
+    public static String generateName(int lenName, double chanceDblLetter, Random random) {
+        String consonants = "bcdfghjklmnpqrstvwxyz";
+        String vowels = "aeoiu";
+        
+        String petName = "";
+        
+        for(int i = 0; i < lenName; i++) {
+            if(i % 2 == 0) {
+                //consonant
+                petName += consonants.charAt(random.nextInt(21));
+            }
+            else if(i % 2 == 1) {
+                //vowel
+                if(Math.random() < chanceDblLetter && lenName - (i + 1) >= 2) {
+                    //make sure that there there is still space for 2 letters in name
+                    char vow = vowels.charAt(random.nextInt(5));
+                    petName += vow;
+                    petName += vow;
+                    lenName--;
+                }
+                else {
+                    petName += vowels.charAt(random.nextInt(5));
+                }
+            }
+                            
+            if(i == 0) petName = petName.toUpperCase(); // capitalize the first letter
+        }
+        
+        
+        return petName;
+    }
+    
+    public static void printStartScreen() {
+        System.out.println("            |\\_/|        D\\___/\\\n" +
+                            "            (0_0)         (0_o)\n" +
+                            "           ==(Y)==         (V)\n" +
+                            "----------(u)---(u)----oOo--U--oOo---\n" +
+                            "__|_______|_______|_______|_______|___");
+        
+        System.out.println("               PET ISLAND");
+    }
+    
+    
     public static void main(String[] args) {
         // TODO code application logic here
         Scanner input = new Scanner(System.in);
@@ -21,20 +91,12 @@ public class VirtualPet {
         //final variables
         final String CORRECT_USERNAME = "snoopy";
         final String CORRECT_PASSWORD = "toto";
-        final String CONSONANTS = "bcdfghjklmnpqrstvwxyz";
-        final String VOWELS = "aeoiu";
         final int STARTING_POINTS = 20;//20 starting points
         final double CHANCE_DOUBLE_LETTER = 0.3;//chance of having a double letter in pet name
         
         
         //Starting screen
-        System.out.println("            |\\_/|        D\\___/\\\n" +
-                            "            (0_0)         (0_o)\n" +
-                            "           ==(Y)==         (V)\n" +
-                            "----------(u)---(u)----oOo--U--oOo---\n" +
-                            "__|_______|_______|_______|_______|___");
-        
-        System.out.println("               PET ISLAND");
+        printStartScreen();
         
         
         //logging in
@@ -123,34 +185,14 @@ public class VirtualPet {
                     case 2:
                         //generate a random name
                         int lenName = random.nextInt(5) + 4;
-                        
-                        for(int i = 0; i < lenName; i++) {
-                            if(i % 2 == 0) {
-                                //consonant
-                                petName += CONSONANTS.charAt(random.nextInt(21));
-                            }
-                            else if(i % 2 == 1) {
-                                //vowel
-                                if(Math.random() < CHANCE_DOUBLE_LETTER && lenName - (i + 1) >= 2) {
-                                    //make sure that there there is still space for 2 letters in name
-                                    char vow = VOWELS.charAt(random.nextInt(5));
-                                    petName += vow;
-                                    petName += vow;
-                                    lenName--;
-                                }
-                                else {
-                                    petName += VOWELS.charAt(random.nextInt(5));
-                                }
-                            }
-                            
-                            if(i == 0) petName = petName.toUpperCase(); // capitalize the first letter
-                        }
+                        petName = generateName(lenName, CHANCE_DOUBLE_LETTER, random);
                         break;
                         
                     default:
                         System.out.println("Bad Input");
                         System.exit(0);
                 }
+                
                 //display name
                 System.out.println("\nYour " + petSpecies + ", " + petName + ", has been born!");
                 
@@ -218,15 +260,10 @@ public class VirtualPet {
                         
                         //shuffling
                         String unshuffled = "aabbccddee";
-                        String shuffled = "";
+                        String shuffled = shuffleString(unshuffled, random);
+                        int numGuesses = 0;
                         
-                        for(int i = 0; i < 10; i++) {
-                            int randomIndex = random.nextInt(unshuffled.length());
-                            String randomChar = unshuffled.substring(randomIndex, randomIndex + 1);
-                            shuffled += randomChar;
-                            unshuffled = unshuffled.substring(0, randomIndex) + unshuffled.substring(randomIndex + 1);
-                        }
-                        //System.out.println(shuffled);  UNCOMMENT IF YOU WANT TO REVEAL ANSWER BEFORE PLAYING (FOR TESTING)
+                        System.out.println(shuffled);  //UNCOMMENT IF YOU WANT TO REVEAL ANSWER BEFORE PLAYING (FOR TESTING)
                         
                         //Censored string that will be updated after every correct match
                         String shuffledCensored = "**********";
@@ -253,7 +290,7 @@ public class VirtualPet {
                                 
                                 //update shuffledCensored
                                 //replace asterix with the proper letters
-                                shuffledCensored = shuffledCensored.substring(0, Math.min(index1, index2)) + shuffled.charAt(index1) + shuffledCensored.substring(Math.min(index1, index2) + 1, Math.max(index1, index2)) + shuffled.charAt(index1) + shuffledCensored.substring(Math.max(index1, index2) + 1);
+                                shuffledCensored = revealTwoIndexes(shuffledCensored, shuffled, index1, index2);
                                 
                             }
                             
@@ -263,27 +300,33 @@ public class VirtualPet {
                             }
                             //not a match
                             else {
-                                System.out.println("They are not a match!");
+                                System.out.println(revealTwoIndexes(shuffledCensored, shuffled, index1, index2));
                             }
                             
                             //Display shuffledCensored
                             System.out.println("\nShuffled string: " + shuffledCensored);
                             
+                            numGuesses++;
+                            
                             //take new input if there is still characters to be guessed
                             if(shuffledCensored.indexOf("*") >= 0) {
-                                    System.out.print("\nGuess Index 1: ");
-                                    index1 = input.nextInt();
-                                    System.out.print("Guess Index 2: ");
-                                    index2 = input.nextInt();
+                                System.out.print("\nGuess Index 1: ");
+                                index1 = input.nextInt();
+                                System.out.print("Guess Index 2: ");
+                                index2 = input.nextInt();
                             }
                             
                             //No more characters being censored = win
                             else {
-                                System.out.println("Congratulations! You solved it!");
+                                System.out.println("Congratulations! You solved it in " + numGuesses + " guesses!");
                             }
+                            
                         }
                         
-                    break;
+                        break;
+                    default: 
+                        System.out.println("Bad Input");
+                        System.exit(0);
                         
                 }
                 
