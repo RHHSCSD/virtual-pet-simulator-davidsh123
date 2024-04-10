@@ -82,6 +82,17 @@ public class VirtualPet {
         System.out.println("               PET ISLAND");
     }
     
+    public static void playWithPet() {
+        System.out.println("You bought a toy to play with your pet.");
+    }
+    
+    public static void feedPet() {
+        System.out.println("You feed your pet");
+    }
+    
+    public static void groomPet() {
+        System.out.println("You groom your pet");
+    }
     
     public static void main(String[] args) {
         // TODO code application logic here
@@ -331,6 +342,9 @@ public class VirtualPet {
                 }
                 
                 
+                int currEnergy = maxEnergy / 2;
+                int currFood = maxFood / 2;
+                int currHealth = maxHealth / 2;
                 
                 
                 break;
