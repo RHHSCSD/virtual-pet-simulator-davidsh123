@@ -211,10 +211,13 @@ public class VirtualPet {
                 //dividing starting points
                 int startingPoints = STARTING_POINTS; // number of total starting points to be randomly divided among health, food, energy
                 
-                maxHealth = random.nextInt(startingPoints) + 1;
+                //max health 4 to 8
+                maxHealth = random.nextInt(startingPoints - 15) + 4;
                 startingPoints -= maxHealth;
-                maxFood = random.nextInt(startingPoints) + 1;
+                //max food 4 to 8
+                maxFood = random.nextInt(startingPoints - 11) + 4;
                 startingPoints -= maxFood;
+                // max energy 4 to 12
                 maxEnergy = startingPoints;
                 
                 //display stats
@@ -230,7 +233,8 @@ public class VirtualPet {
                         //number guessing game
                         
                         System.out.println("\nWelcome to the number guessing game!\n");
-                        System.out.println("Random number from 1-100 has been chosen!");
+                        System.out.println("Guess '-1' to quit the game.");
+                        
                         
                         //choose randum number 1-100
                         int randNum = random.nextInt(100) + 1;
@@ -240,30 +244,44 @@ public class VirtualPet {
                         int guessCounter = 0;
                         int guess = 0;
                         
-                        
-                        while(guess != randNum  && guessCounter < TOTAL_NUM_GUESSES) {
-                            System.out.print("Your guess: ");
-                            guess = input.nextInt();
+                        while (guess != -1) {
+                            System.out.println("Random number from 1-100 has been chosen!");
                             
-                            //compare guess to random number
-                            if (guess < randNum) {
-                                System.out.println("Too low");
-                                guessCounter++;
-                                System.out.println("Guesses left: " + (TOTAL_NUM_GUESSES - guessCounter));
+                            while(guess != randNum  && guessCounter < TOTAL_NUM_GUESSES && guess != -1) {
+                                System.out.print("Your guess: ");
+                                guess = input.nextInt();
+                                //compare guess to random number
+                                if(guess == -1) {
+                                    break;
+                                }
+                                else if (guess < randNum) {
+                                    System.out.println("Too low");
+                                    guessCounter++;
+                                    System.out.println("Guesses left: " + (TOTAL_NUM_GUESSES - guessCounter) + "\n");
+                                }
+                                else if(guess > randNum) {
+                                    System.out.println("Too high");
+                                    guessCounter++;
+                                    System.out.println("Guesses left: " + (TOTAL_NUM_GUESSES - guessCounter) + "\n");
+                                }
+                                else if(guess == randNum){
+                                    System.out.println("Correct!");
+                                    //Win money
+                                    int moneyGained = random.nextInt(10) + 1;
+                                    System.out.println("You won " + moneyGained + " moneys!\n");
+                                    money += moneyGained;
+                                    
+                                }
+                                if(TOTAL_NUM_GUESSES - guessCounter == 0) {
+                                    System.out.println("You ran out of guesses!");
+                                }
+                                
                             }
-                            else if(guess > randNum) {
-                                System.out.println("Too high");
-                                guessCounter++;
-                                System.out.println("Guesses left: " + (TOTAL_NUM_GUESSES - guessCounter));
-                            }
-                            else {
-                                System.out.println("Correct!");
-                                //Win money
-                                int moneyGained = random.nextInt(5) + 1;
-                                System.out.println("You won " + moneyGained + " moneys!");
-                                money += moneyGained;
-                            }
+                            randNum = random.nextInt(100) + 1;
+                            guessCounter = 0;
+                            
                         }
+                        
                         break;
                         
                     case 2:
@@ -342,10 +360,31 @@ public class VirtualPet {
                 }
                 
                 
-                int currEnergy = maxEnergy / 2;
-                int currFood = maxFood / 2;
-                int currHealth = maxHealth / 2;
+                double currEnergy = maxEnergy / 2.0;
+                double currFood = maxFood / 2.0;
+                double currHealth = maxHealth / 2.0;
                 
+                System.out.println("Choose an activity to do: ");
+                System.out.println("1. Buy a toy to play with your pet\n2. Buy food to feed your pet\n3. Groom your pet");
+                System.out.print("Your selection: ");
+                int activityChoice = input.nextInt();
+                switch(activityChoice) {
+                    case 1:
+                        money -= 5;
+                        playWithPet();
+                        currEnergy += currEnergy * 0.05;
+                        break;
+                    case 2:
+                        money -= 5;
+                        feedPet();
+                        currFood += currFood * 0.05;
+                    case 3:
+                        groomPet();
+                        currHealth += currHealth * 0.05;
+                    default:
+                        System.out.println("Bad input.");
+                    
+                }
                 
                 break;
                 
