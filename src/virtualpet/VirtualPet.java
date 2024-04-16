@@ -4,6 +4,7 @@
  */
 package virtualpet;
 import java.util.*;
+import javax.swing.JOptionPane;
 /**
  *
  * @author michael.roy-diclemen
@@ -111,11 +112,9 @@ public class VirtualPet {
         
         
         //logging in
-        System.out.print("Enter your name: ");
-        String userName = input.nextLine();
+        String userName = JOptionPane.showInputDialog("Enter your Name: ");
         
-        System.out.print("Enter the password: ");
-        String password = input.nextLine();
+        String password = JOptionPane.showInputDialog("Enter the password");
         
         int counter = 1;
         while((!userName.equals(CORRECT_USERNAME) || !password.equals(CORRECT_PASSWORD)) && counter <= 3) {
@@ -138,6 +137,7 @@ public class VirtualPet {
         
         
         //display menu options
+        System.out.println("Access Granted");
         System.out.println("\n1. Start\n2. Instructions\n3. Exit");
         System.out.print("Please make a selection(1,2,3): ");
         int menuSelection = input.nextInt();
@@ -188,9 +188,7 @@ public class VirtualPet {
                     
                     case 1:
                         //user chooses the name
-                        System.out.print("Enter your pet's name: ");
-                        input.nextLine();
-                        petName = input.nextLine();
+                        petName = JOptionPane.showInputDialog("Enter your pet's name: ");
                         break;
                                
                     case 2:
