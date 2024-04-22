@@ -119,25 +119,20 @@ public class VirtualPet {
         int counter = 1;
         while((!userName.equals(CORRECT_USERNAME) || !password.equals(CORRECT_PASSWORD)) && counter <= 3) {
             if(counter == 3) {
-                System.out.println("Login failed.");
+                JOptionPane.showMessageDialog(null, "Login failed.");
                 System.exit(0);
             }
             
-            System.out.println("\nIncorrect credentials. ");
-            System.out.println("Attempts left: " + (3 - counter) + "\n");
+            JOptionPane.showMessageDialog(null, "Incorrect credentials. \nAttempts left: " + (3 - counter));
             
-            
-            System.out.print("Enter your name: ");
-            userName = input.nextLine();
+            userName = JOptionPane.showInputDialog("Enter your Name: ");
         
-            System.out.print("Enter the password: ");
-            password = input.nextLine();
+            password = JOptionPane.showInputDialog("Enter the password");
             counter++;
         }
         
-        
         //display menu options
-        System.out.println("Access Granted");
+        JOptionPane.showMessageDialog(null, "Access Granted");
         System.out.println("\n1. Start\n2. Instructions\n3. Exit");
         System.out.print("Please make a selection(1,2,3): ");
         int menuSelection = input.nextInt();
@@ -151,7 +146,8 @@ public class VirtualPet {
                 
                 //variables
                 String petName = "", petSpecies = "";
-                int maxHealth, maxFood, maxEnergy, money = 0;
+                int money = 100;
+                int[] activities = new int[3]; //{play, feed, groom}
                 
                 
                 //pet selection
@@ -188,6 +184,7 @@ public class VirtualPet {
                     
                     case 1:
                         //user chooses the name
+                        System.out.println("(Open your gui)");
                         petName = JOptionPane.showInputDialog("Enter your pet's name: ");
                         break;
                                
@@ -209,17 +206,25 @@ public class VirtualPet {
                 //dividing starting points
                 int startingPoints = STARTING_POINTS; // number of total starting points to be randomly divided among health, food, energy
                 
+                int[] maxStats = new int[3]; //{health, food, energy}
+                double[] currentStats = new double[3];
+                
                 //max health 4 to 8
-                maxHealth = random.nextInt(startingPoints - 15) + 4;
-                startingPoints -= maxHealth;
+                maxStats[0] = random.nextInt(startingPoints - 15) + 4;
+                startingPoints -= maxStats[0];
                 //max food 4 to 8
-                maxFood = random.nextInt(startingPoints - 11) + 4;
-                startingPoints -= maxFood;
+                maxStats[1] = random.nextInt(startingPoints - 11) + 4;
+                startingPoints -= maxStats[1];
                 // max energy 4 to 12
-                maxEnergy = startingPoints;
+                maxStats[2] = startingPoints;
+                
+                currentStats[0] = maxStats[0] / 2.0;
+                currentStats[1] = maxStats[1] / 2.0;
+                currentStats[2] = maxStats[2] / 2.0;
+                
                 
                 //display stats
-                System.out.println("\nMAX HEALTH = " + maxHealth + "\nMAX FOOD = " + maxFood + "\nMAX ENERGY = " + maxEnergy);
+                System.out.println("\nMAX HEALTH = " + maxStats[0] + "\nMAX FOOD = " + maxStats[1] + "\nMAX ENERGY = " + maxStats[2]);
                 
                 
                 //mini games
@@ -290,7 +295,7 @@ public class VirtualPet {
                         String shuffled = shuffleString(unshuffled, random);
                         int numGuesses = 0;
                         
-                        System.out.println(shuffled);  //UNCOMMENT IF YOU WANT TO REVEAL ANSWER BEFORE PLAYING (FOR TESTING)
+                        System.out.println(shuffled);  //UNCOMMENT IF YOU WANT TO REVEAL ANSWER BEFORE PLAYING (FOR TESTING)***
                         
                         //Censored string that will be updated after every correct match
                         String shuffledCensored = "**********";
@@ -303,7 +308,7 @@ public class VirtualPet {
                         int index2 = input.nextInt();
                         
                         //while there are still censored characters (more guesses to be made)
-                        while (shuffledCensored.indexOf("*") >= 0) {
+                        while (shuffledCensored.contains("*")) {
                             
                             //characters at the guessed index are a match and haven't been chosen already 
                             //are represented by '*' in shuffledCensored
@@ -336,7 +341,7 @@ public class VirtualPet {
                             numGuesses++;
                             
                             //take new input if there is still characters to be guessed
-                            if(shuffledCensored.indexOf("*") >= 0) {
+                            if(shuffledCensored.contains("*")) {
                                 System.out.print("\nGuess Index 1: ");
                                 index1 = input.nextInt();
                                 System.out.print("Guess Index 2: ");
@@ -357,33 +362,47 @@ public class VirtualPet {
                         
                 }
                 
-                
-                double currEnergy = maxEnergy / 2.0;
-                double currFood = maxFood / 2.0;
-                double currHealth = maxHealth / 2.0;
-                
-                System.out.println("Choose an activity to do: ");
-                System.out.println("1. Buy a toy to play with your pet\n2. Buy food to feed your pet\n3. Groom your pet");
-                System.out.print("Your selection: ");
-                int activityChoice = input.nextInt();
-                switch(activityChoice) {
-                    case 1:
-                        money -= 5;
-                        playWithPet();
-                        currEnergy += currEnergy * 0.05;
-                        break;
-                    case 2:
-                        money -= 5;
-                        feedPet();
-                        currFood += currFood * 0.05;
-                    case 3:
-                        groomPet();
-                        currHealth += currHealth * 0.05;
-                    default:
-                        System.out.println("Bad input.");
-                    
+                while(money >= 5) {
+                    System.out.println("Your Money: " + money);
+                    System.out.println("\nChoose an activity to do: ");
+                    System.out.println("1. Buy a toy to play with your pet\n2. Buy food to feed your pet\n3. Groom your pet\n4. Exit");
+                    System.out.print("Your selection: ");
+                    int activityChoice = input.nextInt();
+                    switch(activityChoice) {
+                        case 1:
+                            money -= 5;
+                            playWithPet();
+                            currentStats[2] += currentStats[2] * 0.05;
+                            activities[0]++;
+                            break;
+                        case 2:
+                            money -= 5;
+                            feedPet();
+                            currentStats[1] += currentStats[1] * 0.05;
+                            activities[1]++;
+                            break;
+                        case 3:
+                            groomPet();
+                            currentStats[0] += currentStats[0] * 0.05;
+                            activities[2]++;
+                            break;
+                        case 4:
+                            
+                            break;
+                        default:
+                            System.out.println("Bad input.");
+
+                    }
+                    if(activityChoice == 4) break;
                 }
                 
+                System.out.println("Your Money: " + money);
+
+                
+                System.out.println("\nToday you:"
+                        + "\nPlayed with your pet " + activities[0] + " times"
+                        + "\nFed your pet " + activities[1] + " times"
+                        + "\nGroomed your pet " + activities[2] + " times");
                 break;
                 
 
