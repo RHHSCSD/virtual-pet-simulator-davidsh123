@@ -5,13 +5,22 @@
 package virtualpet;
 import java.util.*;
 import javax.swing.JOptionPane;
+import java.io.*;
 /**
  *
  * @author michael.roy-diclemen
  */
 public class VirtualPet {
     
+    static int money = 0;
+    static String petName = "", petSpecies = "";
+    static int[] maxStats = new int[3]; //{health, food, energy}
+    static double[] currentStats = new double[3];
+    static String username, password;
+    
+    
     //shuffle a string
+    //for matching game
     public static String shuffleString(String s, Random r) {
         
         String shuffled = "";
@@ -31,7 +40,6 @@ public class VirtualPet {
         return shuffled;
     }
     
-    //matching game
     //reveal two indexes in shuffledCensored
     public static String revealTwoIndexes(String censored, String s, int index1, int index2) {
         int min = Math.min(index1, index2);
@@ -40,7 +48,6 @@ public class VirtualPet {
         return censored.substring(0, min) + s.charAt(min) + censored.substring(min + 1, max) + s.charAt(max) + censored.substring(max + 1);
     }
     
-    //Generate a random name following the rules
     public static String generateName(int lenName, double chanceDblLetter, Random random) {
         String consonants = "bcdfghjklmnpqrstvwxyz";
         String vowels = "aeoiu";
@@ -54,6 +61,7 @@ public class VirtualPet {
             }
             else if(i % 2 == 1) {
                 //vowel
+                //double letter?
                 if(Math.random() < chanceDblLetter && lenName - (i + 1) >= 2) {
                     //make sure that there there is still space for 2 letters in name
                     char vow = vowels.charAt(random.nextInt(5));
@@ -61,6 +69,7 @@ public class VirtualPet {
                     petName += vow;
                     lenName--;
                 }
+                //no double ltter
                 else {
                     petName += vowels.charAt(random.nextInt(5));
                 }
@@ -85,10 +94,12 @@ public class VirtualPet {
     
     public static void playWithPet() {
         System.out.println("You bought a toy to play with your pet.");
+        money -= 5;
     }
     
     public static void feedPet() {
         System.out.println("You feed your pet");
+        money -= 5;
     }
     
     public static void groomPet() {
@@ -101,8 +112,6 @@ public class VirtualPet {
         Random random = new Random();
         
         //final variables
-        final String CORRECT_USERNAME = "snoopy";
-        final String CORRECT_PASSWORD = "toto";
         final int STARTING_POINTS = 20;//20 starting points
         final double CHANCE_DOUBLE_LETTER = 0.3;//chance of having a double letter in pet name
         
@@ -111,24 +120,55 @@ public class VirtualPet {
         printStartScreen();
         
         
-        //logging in
-        String userName = JOptionPane.showInputDialog("Enter your Name: ");
+        System.out.print("Welcome\nWould you like to create new profile (1) or login (2): ");
+        int login = input.nextInt();
         
-        String password = JOptionPane.showInputDialog("Enter the password");
-        
-        int counter = 1;
-        while((!userName.equals(CORRECT_USERNAME) || !password.equals(CORRECT_PASSWORD)) && counter <= 3) {
-            if(counter == 3) {
-                JOptionPane.showMessageDialog(null, "Login failed.");
+        if(login == 1) {
+            //new profile
+            String username = JOptionPane.showInputDialog("Enter your username: ");
+
+            String password = JOptionPane.showInputDialog("Enter your password: ");
+
+            try {
+                File f = new File(username + ".txt");
+                PrintWriter pw = new PrintWriter(f);
+                pw.println(username);
+                pw.println(password);
+                pw.close();
+            }
+            catch(FileNotFoundException e) {
                 System.exit(0);
             }
-            
-            JOptionPane.showMessageDialog(null, "Incorrect credentials. \nAttempts left: " + (3 - counter));
-            
-            userName = JOptionPane.showInputDialog("Enter your Name: ");
-        
-            password = JOptionPane.showInputDialog("Enter the password");
-            counter++;
+        }
+        else if(login == 2) {
+            //logging in
+            String inputUsername = JOptionPane.showInputDialog("Enter your username: ");
+
+            String inputPassword = JOptionPane.showInputDialog("Enter your password: ");
+
+            try {
+                File f = new File(inputUsername + ".txt");
+                Scanner s = new Scanner(f);
+                username = s.nextLine();
+                password = s.nextLine();
+                int counter = 1;
+                while(!inputPassword.equals(password) && counter <= 3) {
+                    if(counter == 3) {
+                        JOptionPane.showMessageDialog(null, "Login failed.");
+                        System.exit(0);
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Incorrect credentials. \nAttempts left: " + (3 - counter));
+
+                    inputPassword = JOptionPane.showInputDialog("Enter your password: ");
+                    counter++;
+                }
+                s.close();
+            }
+            catch(FileNotFoundException e) {
+                System.out.println("Username does not exist");
+                System.exit(0);
+            }
         }
         
         //display menu options
@@ -145,8 +185,7 @@ public class VirtualPet {
                 //start
                 
                 //variables
-                String petName = "", petSpecies = "";
-                int money = 100;
+
                 int[] activities = new int[3]; //{play, feed, groom}
                 
                 
@@ -171,6 +210,15 @@ public class VirtualPet {
                 }
                 //display pet species
                 System.out.println("You chose: " + petSpecies + "!");
+                try {
+                    File f = new File(username + ".txt");
+                    PrintWriter pw = new PrintWriter(f);
+                    pw.println(petSpecies);
+                    
+                }
+                catch(FileNotFoundException e) {
+                    
+                }
                 
                 
                 //naming
@@ -206,8 +254,7 @@ public class VirtualPet {
                 //dividing starting points
                 int startingPoints = STARTING_POINTS; // number of total starting points to be randomly divided among health, food, energy
                 
-                int[] maxStats = new int[3]; //{health, food, energy}
-                double[] currentStats = new double[3];
+                
                 
                 //max health 4 to 8
                 maxStats[0] = random.nextInt(startingPoints - 15) + 4;
@@ -217,6 +264,17 @@ public class VirtualPet {
                 startingPoints -= maxStats[1];
                 // max energy 4 to 12
                 maxStats[2] = startingPoints;
+                try {
+                    File f = new File(username + ".txt");
+                    PrintWriter pw = new PrintWriter(f);
+                    pw.println(maxStats[0]);
+                    pw.println(maxStats[1]);
+                    pw.println(maxStats[2]);
+                }
+                catch(FileNotFoundException e) {
+                    
+                }
+                
                 
                 currentStats[0] = maxStats[0] / 2.0;
                 currentStats[1] = maxStats[1] / 2.0;
@@ -370,13 +428,11 @@ public class VirtualPet {
                     int activityChoice = input.nextInt();
                     switch(activityChoice) {
                         case 1:
-                            money -= 5;
                             playWithPet();
                             currentStats[2] += currentStats[2] * 0.05;
                             activities[0]++;
                             break;
                         case 2:
-                            money -= 5;
                             feedPet();
                             currentStats[1] += currentStats[1] * 0.05;
                             activities[1]++;
@@ -397,7 +453,18 @@ public class VirtualPet {
                 }
                 
                 System.out.println("Your Money: " + money);
-
+                try {
+                    File f = new File(username + ".txt");
+                    PrintWriter pw = new PrintWriter(f);
+                    pw.println(currentStats[0]);
+                    pw.println(currentStats[1]);
+                    pw.println(currentStats[0]);
+                    pw.println(money);
+                    
+                }
+                catch(FileNotFoundException e) {
+                    
+                }
                 
                 System.out.println("\nToday you:"
                         + "\nPlayed with your pet " + activities[0] + " times"
